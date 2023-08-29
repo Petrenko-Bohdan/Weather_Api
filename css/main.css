@@ -1,0 +1,152 @@
+@charset "UTF-8";
+*,
+*::before,
+*::after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html {
+  font: "Open Sans" sans-serif 500;
+}
+
+body {
+  display: -ms-grid;
+  display: grid;
+  min-height: 100vh;
+  color: #102A42;
+  font-size: 16px;
+  line-height: 1.5;
+  place-items: center;
+}
+
+ul {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  padding-bottom: 20px;
+}
+
+.header__logo {
+  margin: 0 auto;
+}
+
+.input-city {
+  margin-top: 20px;
+  width: 500px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.weather {
+  width: 500px;
+}
+
+.weather__today {
+  background-color: orange;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 0 auto;
+}
+
+.weather__header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.weather__city {
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.weather__status {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.weather__temp {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.weather__temp::after,
+.weather__feels-like::after {
+  display: inline-block;
+  margin-left: 5px;
+  content: "°C";
+}
+
+.next-days-of-the-week {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-top: 1px solid silver;
+  padding: 20px 10px 0;
+  margin-top: 15px;
+}
+
+.week__day {
+  font-size: 30px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.weather__status {
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.weather__temp-nextDays {
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.temp__day-tittle {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.temp__night-tittle {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+}
+
+.temperature {
+  margin: 0;
+}
+
+.temp__day-temperature::after,
+.temp__night-temperature::after {
+  display: inline-block;
+  margin-left: 5px;
+  content: "°C";
+}
