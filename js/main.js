@@ -1,182 +1,185 @@
-const weatherBlock = document.querySelector('#weather');
+const defaultCity = "London";
 
-// const WEATHER_URL = `https://api.openweathermap.org/data/2.5/forecast?units=metric&q=${city}&cnt=5&appid=f98f993666114491812bda5f9b1b0ae8`
-let city = 'London';
+function getWeather(city) {
+  const WEATHER_URL = `https://api.openweathermap.org/data/2.5/forecast?units=metric&q=${city}&cnt=5&appid=f98f993666114491812bda5f9b1b0ae8`;
 
-searchCity.onsubmit = function(event){
-	event.preventDefault();
-
-	city = inputCity.value.trim();
-	
-	const WEATHER_URL = `https://api.openweathermap.org/data/2.5/forecast?units=metric&q=${city}&cnt=5&appid=f98f993666114491812bda5f9b1b0ae8`
-	
-	async function loadWeather(event){
-
-		const response = await fetch (WEATHER_URL, {
-			method: 'GET',
-		});
-		const responseResult = await response.json();
-		
-		if(response.ok){
-			getWeather(responseResult);
-		} else {
-			weatherBlock.innerHTML = responseResult.message;
-		}
-	}
-
-	if(weatherBlock){
-		loadWeather();
-	}
+  async function loadWeather() {
+    const response = await fetch(WEATHER_URL, {
+      method: "GET",
+    });
+    const responseResult = await response.json();
+    if (response.ok) {
+      constructWeatherHTML(responseResult);
+    } else {
+      wrapier.innerHTML = responseResult.message;
+    }
+  }
+  if (wrapier) {
+    loadWeather();
+  }
 }
 
-function getWeather(data){
-	const location = data.city.name;
+getWeather(defaultCity);
+searchCity.onsubmit = function (event) {
+  event.preventDefault();
 
-	const currentlyTemp = Math.round(data.list[0].main.temp);
-	const currentlyWeatherStatus = data.list[0].weather[0].main;
-	const currentlyWeatherIcon = data.list[0].weather[0].icon;
+  const innputValue = inputCity?.value?.trim();
+  if (!!innputValue) {
+    getWeather(inputCity.value.trim());
+  }
+};
 
-	const nextDayWeatherStatus = data.list[1].weather[0].main;
-	const nextDayWeatherIcon = data.list[1].weather[0].icon;
-	const nextDayTempMax = Math.round(data.list[1].main.temp_max);
-	const nextDayTempMin = Math.round(data.list[1].main.temp_min);
-	
-	const thirdDayWeatherStatus = data.list[2].weather[0].main;
-	const thirdDayWeatherIcon = data.list[2].weather[0].icon;
-	const thirdDayTempMax = Math.round(data.list[2].main.temp_max);
-	const thirdDayTempMin = Math.round(data.list[2].main.temp_min);
+function constructWeatherHTML(data) {
+  const location = data.city.name;
 
-	const fourthDayWeatherStatus = data.list[3].weather[0].main;
-	const fourthDayWeatherIcon = data.list[3].weather[0].icon;
-	const fourthDayTempMax = Math.round(data.list[3].main.temp_max);
-	const fourthDayTempMin = Math.round(data.list[3].main.temp_min);
+  let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
-	const fifthDayWeatherStatus = data.list[4].weather[0].main;
-	const fifthDayWeatherIcon = data.list[4].weather[0].icon;
-	const fifthDayTempMax = Math.round(data.list[4].main.temp_max);
-	const fifthDayTempMin = Math.round(data.list[4].main.temp_min);
+  let currentDate = new Date();
+  let nextDayOfWeek = days[(currentDate.getDay() + 1) % 7];
+  let thirdDayOfWeek = days[(currentDate.getDay() + 2) % 7];
+  let fourthDayOfWeek = days[(currentDate.getDay() + 3) % 7];
+  let fifthDayOfWeek = days[(currentDate.getDay() + 4) % 7];
 
-let days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const weatherForecast = [];
 
-let currentDate = new Date();
-let nextDayOfWeek = days[(currentDate.getDay()+1)%7];
-let thirdDayOfWeek = days[(currentDate.getDay()+2)%7]; 
-let fourthDayOfWeek = days[(currentDate.getDay()+3)%7];
-let fifthDayOfWeek = days[(currentDate.getDay()+4)%7];
+  for (const forecast of data.list) {
+    const weatherData = {
+      icon: forecast.weather[0].icon,
+      temperature: Math.round(forecast.main.temp),
+      status: forecast.weather[0].main,
+      minTemperature: Math.round(forecast.main.temp_min),
+      maxTemperature: Math.round(forecast.main.temp_max),
+    };
+    weatherForecast.push(weatherData);
+  }
 
-	const template = `<div class="weather__today">
+  for (let i = 0; i < 5; i++) {
+    const template = `<div class="weather__today">
 	<div class="weather__header">
 		<div class="weather__main">
-		<div class="weather__temp">${currentlyTemp}</div>	
-			<div class="weather__status">${currentlyWeatherStatus}</div>
+		<div class="weather__temp">${weatherForecast[0].temperature}</div>	
+			<div class="weather__status">${weatherForecast[0].status}</div>
 		</div>
 		<div class="weather__city">${location}</div>
 		<div class="weather__icon">
-			<img src="http://openweathermap.org/img/w/${currentlyWeatherIcon}.png" alt="${currentlyWeatherStatus}">
+			<img src="http://openweathermap.org/img/w/${weatherForecast[0].icon}.png" alt="${weatherForecast[0].status}">
 		</div>
 	</div>
 </div>
 <div class="next-days-of-the-week">
 	<div class="week__day">${nextDayOfWeek}</div>
 		<div class="weather__icon">
-			<img src="http://openweathermap.org/img/w/${nextDayWeatherIcon}.png" alt="${nextDayWeatherIcon}">
+			<img src="http://openweathermap.org/img/w/${weatherForecast[1].icon}.png" alt="${weatherForecast[i].status}}">
 		</div>
-		<div class="weather__status">${nextDayWeatherStatus}</div>
+		<div class="weather__status">${weatherForecast[i].status}</div>
 		<div class="weather__temp-nextDays">
 			<div class="weather__temp-day">
 				<p class="temp__day-tittle">
 					Day
 				</p>
 				<p class="temp__day-temperature temperature">
-					${nextDayTempMax}
+					${weatherForecast[1].maxTemperature}
 				</p>
 			</div>
 			<div class="weather__temp-night">
 				<p class="temp__night-temperature temperature">
-					${nextDayTempMin}
+					${weatherForecast[1].maxTemperature}
 				</p>
 				<p class="temp__night-tittle">
 					Night
 				</p>
+ 			</div>
 		</div>
-	</div>
+ 	</div>
 </div>
 <div class="next-days-of-the-week">
 	<div class="week__day">${thirdDayOfWeek}</div>
 		<div class="weather__icon">
-			<img src="http://openweathermap.org/img/w/${thirdDayWeatherIcon}.png" alt="${thirdDayWeatherStatus}">
+			<img src="http://openweathermap.org/img/w/${weatherForecast[2].icon}.png" alt="${weatherForecast[i].status}}">
 		</div>
-		<div class="weather__status">${thirdDayWeatherStatus}</div>
+		<div class="weather__status">${weatherForecast[2].status}</div>
 		<div class="weather__temp-nextDays">
 			<div class="weather__temp-day">
 				<p class="temp__day-tittle">
 					Day
 				</p>
 				<p class="temp__day-temperature temperature">
-					${thirdDayTempMax}
+					${weatherForecast[2].maxTemperature}
 				</p>
 			</div>
 			<div class="weather__temp-night">
 				<p class="temp__night-temperature temperature">
-					${thirdDayTempMin}
+					${weatherForecast[2].maxTemperature}
 				</p>
 				<p class="temp__night-tittle">
 					Night
 				</p>
+ 			</div>
 		</div>
-	</div>
+ 	</div>
 </div>
 <div class="next-days-of-the-week">
 	<div class="week__day">${fourthDayOfWeek}</div>
 		<div class="weather__icon">
-			<img src="http://openweathermap.org/img/w/${fourthDayWeatherIcon}.png" alt="${fourthDayWeatherStatus}">
+			<img src="http://openweathermap.org/img/w/${weatherForecast[2].icon}.png" alt="${weatherForecast[i].status}}">
 		</div>
-		<div class="weather__status">${fourthDayWeatherStatus}</div>
+		<div class="weather__status">${weatherForecast[2].status}</div>
 		<div class="weather__temp-nextDays">
 			<div class="weather__temp-day">
 				<p class="temp__day-tittle">
 					Day
 				</p>
 				<p class="temp__day-temperature temperature">
-					${fourthDayTempMax}
+					${weatherForecast[3].maxTemperature}
 				</p>
 			</div>
 			<div class="weather__temp-night">
 				<p class="temp__night-temperature temperature">
-					${fourthDayTempMin}
+					${weatherForecast[3].maxTemperature}
 				</p>
 				<p class="temp__night-tittle">
 					Night
 				</p>
+ 			</div>
 		</div>
-	</div>
+ 	</div>
 </div>
 <div class="next-days-of-the-week">
 	<div class="week__day">${fifthDayOfWeek}</div>
 		<div class="weather__icon">
-			<img src="http://openweathermap.org/img/w/${fifthDayWeatherIcon}.png" alt="${fifthDayWeatherStatus}">
+			<img src="http://openweathermap.org/img/w/${weatherForecast[4].icon}.png" alt="${weatherForecast[i].status}}">
 		</div>
-		<div class="weather__status">${fifthDayWeatherStatus}</div>
+		<div class="weather__status">${weatherForecast[4].status}</div>
 		<div class="weather__temp-nextDays">
 			<div class="weather__temp-day">
 				<p class="temp__day-tittle">
 					Day
 				</p>
 				<p class="temp__day-temperature temperature">
-					${fifthDayTempMax}
+					${weatherForecast[4].maxTemperature}
 				</p>
 			</div>
 			<div class="weather__temp-night">
 				<p class="temp__night-temperature temperature">
-					${fifthDayTempMin}
+					${weatherForecast[4].maxTemperature}
 				</p>
 				<p class="temp__night-tittle">
 					Night
 				</p>
+ 			</div>
 		</div>
-	</div>
+ 	</div>
 </div>
 `;
-weatherBlock.innerHTML = template;
+    weather.innerHTML = template;
+  }
+  console.log(data);
 }
-
